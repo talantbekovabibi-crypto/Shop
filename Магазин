@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Магазин</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>🛍️ Online Shop</h1>
+<div class="products" id="products"></div>
+<div id="cart">
+<h2>🛒 Корзина</h2>
+<div id="items">Пока пусто</div>
+<h3 id="total">Итого: 0 сом</h3>
+<button onclick="clearCart()">Очистить корзину</button>
+</div>
+<script src="app.js"
+</body>
+</html>
+
+*body{font-family:Arial;background:#eff9ff;margin:0;padding:20px}
+h1{text-align:center;color:#2686b5}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;max-width:800px;margin:auto}
+.card{background:white;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 12px #abc}
+.emoji{font-size:45px}
+button{background:#83d1f3;border:0;border-radius:8px;padding:10px;cursor:pointer}
+#cart{text-align:center;background:white;border-radius:15px;padding:20px;margin:20px auto;max-width:760px}
+
+const products=[
+{name:'Наушники',price:900,emoji:'🎧'},
+{name:'Часы',price:1500,emoji:'⌚'},
+{name:'Рюкзак',price:1200,emoji:'🎒'},
+{name:'Кружка',price:250,emoji:'☕'}
+];
+let cart=[];
+function renderProducts(){
+let box=document.getElementById('products');
+products.forEach((p,i)=>{
+let card=document.createElement('div');
+card.className='card';
+card.innerHTML=`<div class="emoji">${p.emoji}</div><h3>${p.name}</h3><p>${p.price} сом</p>`;
+let button=document.createElement('button');
+button.textContent='Добавить в корзину';
+button.onclick=()=>{cart.push(i);renderCart()};
+card.append(button);box.append(card);
+});
+}
+function renderCart(){
+let items=document.getElementById('items');
+items.replaceChildren();
+if(!cart.length)items.textContent='Пока пусто';
+cart.forEach((id,i)=>{
+let p=products[id],row=document.createElement('p');
+row.textContent=p.name+' — '+p.price+' сом ';
+let b=document.createElement('button');
+b.textContent='✖';
+b.onclick=()=>{cart.splice(i,1);renderCart()};
+row.append(b);items.append(row);
+});
+let total=cart.reduce((sum,id)=>sum+products[id].price,0);
+document.getElementById('total').textContent='Итого: '+total+' сом';
+}
+function clearCart(){cart=[];renderCart()}
+renderProducts();renderCart();
